@@ -81,6 +81,26 @@ export class AnimationController {
         this.sm.heroLimeFloorSlice.position.set(0.65, -1.20, 1.35);
       }
 
+      // Safe foreground crystal jelly cubes (Zero clipping with can!)
+      if (this.sm.heroJelly1) {
+        this.sm.heroJelly1.scale.set(1, 1, 1);
+        this.sm.heroJelly1.position.set(
+          -0.75 - (1 - p) * 0.10,
+          -1.16 + Math.sin(time * 2.0) * 0.012,
+          1.32
+        );
+        this.sm.heroJelly1.rotation.set(0.12, 0.55 + time * 0.05, 0.08);
+      }
+      if (this.sm.heroJelly2) {
+        this.sm.heroJelly2.scale.set(1, 1, 1);
+        this.sm.heroJelly2.position.set(
+          1.38 + (1 - p) * 0.10,
+          -1.18 + Math.cos(time * 2.2) * 0.010,
+          1.08
+        );
+        this.sm.heroJelly2.rotation.set(-0.15, 0.82 - time * 0.05, 0.22);
+      }
+
       this.hideConnectors();
     } else if (progress >= 0.18 && progress < 0.38) {
       // SECTION 2: THREE INGREDIENTS - THE SLICING (Exact TikTok Creator Formula)
@@ -102,6 +122,26 @@ export class AnimationController {
         this.sm.heroLimeFloorSlice.position.set(0.65 + p * 1.5, -1.20, 1.35);
       }
 
+      // Jelly cubes dynamically glide outward as the can splits open, enhancing the action!
+      if (this.sm.heroJelly1) {
+        this.sm.heroJelly1.scale.set(1 - p * 0.35, 1 - p * 0.35, 1 - p * 0.35);
+        this.sm.heroJelly1.position.set(
+          -0.75 - p * 1.6,
+          -1.16 - p * 0.25,
+          1.32 + p * 0.35
+        );
+        this.sm.heroJelly1.rotation.y = 0.55 + p * 1.2;
+      }
+      if (this.sm.heroJelly2) {
+        this.sm.heroJelly2.scale.set(1 - p * 0.35, 1 - p * 0.35, 1 - p * 0.35);
+        this.sm.heroJelly2.position.set(
+          1.38 + p * 1.6,
+          -1.18 - p * 0.25,
+          1.08 + p * 0.35
+        );
+        this.sm.heroJelly2.rotation.y = 0.82 - p * 1.2;
+      }
+
       this.updateConnectors(p);
     } else if (progress >= 0.38 && progress < 0.58) {
       // SECTION 3: LIGHTLY SPARKLING (180° ROTATION TO SHOW BACK OF CAN)
@@ -120,6 +160,14 @@ export class AnimationController {
       this.sm.heroLimeSlice.position.set(2.65, -0.65, 0.55);
       if (this.sm.heroLimeFloorSlice) {
         this.sm.heroLimeFloorSlice.position.set(2.15, -1.20, 1.35);
+      }
+      if (this.sm.heroJelly1) {
+        this.sm.heroJelly1.scale.set(0.001, 0.001, 0.001);
+        this.sm.heroJelly1.position.set(-4.5, -1.2, 1.32);
+      }
+      if (this.sm.heroJelly2) {
+        this.sm.heroJelly2.scale.set(0.001, 0.001, 0.001);
+        this.sm.heroJelly2.position.set(4.5, -1.2, 1.08);
       }
       this.sm.orbitGroup.scale.set(0.001, 0.001, 0.001);
     } else if (progress >= 0.58 && progress < 0.76) {
@@ -142,6 +190,14 @@ export class AnimationController {
       if (this.sm.heroLimeFloorSlice) {
         this.sm.heroLimeFloorSlice.position.set(-5, -1.18, 1.05);
       }
+      if (this.sm.heroJelly1) {
+        this.sm.heroJelly1.scale.set(0.001, 0.001, 0.001);
+        this.sm.heroJelly1.position.set(-4.5, -1.2, 1.32);
+      }
+      if (this.sm.heroJelly2) {
+        this.sm.heroJelly2.scale.set(0.001, 0.001, 0.001);
+        this.sm.heroJelly2.position.set(4.5, -1.2, 1.08);
+      }
     } else if (progress >= 0.74 && progress < 0.85) {
       // SECTION 5: NUTRITIONAL IMPACT (VIBRANT RED SCREEN) — matching frame_75/85.jpg
       const p = (progress - 0.74) / 0.11;
@@ -151,6 +207,13 @@ export class AnimationController {
       // Can is on the left, tilted — matching frame_75.jpg half-screen split
       this.sm.canSystem.group.position.set(-1.4, -0.08, 0.4);
       this.sm.canSystem.group.rotation.set(0.15, 0.6 + p * 0.25, -0.12);
+
+      if (this.sm.heroJelly1) {
+        this.sm.heroJelly1.scale.set(0.001, 0.001, 0.001);
+      }
+      if (this.sm.heroJelly2) {
+        this.sm.heroJelly2.scale.set(0.001, 0.001, 0.001);
+      }
 
       const iceScale = Math.min(1, p * 2.5);
       this.sm.iceCubesGroup.scale.set(iceScale, iceScale, iceScale);
@@ -181,6 +244,19 @@ export class AnimationController {
       // Left fruits stand neatly beside the can on the left
       this.sm.heroWatermelonLeft.position.set(-2.2, -0.42, 0.35);
       this.sm.limeCluster.position.set(-1.45, -0.92, 0.65);
+
+      if (this.sm.heroJelly1) {
+        // Glistening crystal ice accent sitting comfortably beside the left lime cluster
+        const s = Math.min(1, p * 2.2);
+        this.sm.heroJelly1.scale.set(s, s, s);
+        this.sm.heroJelly1.position.set(-1.08, -1.18 + Math.sin(time * 2.0) * 0.012, 1.15);
+        this.sm.heroJelly1.rotation.set(0.12, 0.55 + time * 0.05, 0.08);
+      }
+      if (this.sm.heroJelly2) {
+        // Right side completely clear of all fruits/cubes so NO collision or overlap with zears Gaming card!
+        this.sm.heroJelly2.scale.set(0.001, 0.001, 0.001);
+        this.sm.heroJelly2.position.set(5, -1.2, 1.08);
+      }
 
       // Right fruits cleared away so they NEVER collide or overlap with the zears Gaming card!
       this.sm.heroWatermelonRight.position.set(5, -0.22, 0.05);

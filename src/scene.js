@@ -49,11 +49,11 @@ export class SceneManager {
   }
 
   initLights() {
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.62);
+    this.ambientLight = new THREE.AmbientLight(0xfffbf5, 0.74);
     this.scene.add(this.ambientLight);
 
     // Key studio light (casting soft product shadows)
-    this.keyLight = new THREE.DirectionalLight(0xfffaed, 2.6);
+    this.keyLight = new THREE.DirectionalLight(0xfffaed, 2.5);
     this.keyLight.position.set(3.8, 5.8, 4.6);
     this.keyLight.castShadow = true;
     this.keyLight.shadow.mapSize.width = 2048;
@@ -64,8 +64,8 @@ export class SceneManager {
     this.keyLight.shadow.camera.right = 5;
     this.keyLight.shadow.camera.top = 5;
     this.keyLight.shadow.camera.bottom = -5;
-    this.keyLight.shadow.bias = -0.0001;
-    this.keyLight.shadow.radius = 2.8;
+    this.keyLight.shadow.bias = -0.00015;
+    this.keyLight.shadow.radius = 4.8;
     this.scene.add(this.keyLight);
 
     // Left fill light (cool crisp rim)
@@ -85,10 +85,10 @@ export class SceneManager {
   }
 
   initEnvironment() {
-    // Studio floor shadow receiver plane
+    // Studio floor shadow receiver plane (ultra-soft realistic contact shadow, never harsh/black)
     const shadowGeo = new THREE.PlaneGeometry(16, 16);
     const shadowMat = new THREE.ShadowMaterial({
-      opacity: 0.28
+      opacity: 0.13
     });
     this.shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
     this.shadowPlane.rotation.x = -Math.PI / 2;
@@ -96,9 +96,9 @@ export class SceneManager {
     this.shadowPlane.receiveShadow = true;
     this.scene.add(this.shadowPlane);
 
-    // Studio back wall shadow receiver plane for 3D HALVES typography
+    // Studio back wall shadow receiver plane for 3D HALVES typography (soft subtle depth)
     const wallGeo = new THREE.PlaneGeometry(22, 14);
-    const wallMat = new THREE.ShadowMaterial({ opacity: 0.28 });
+    const wallMat = new THREE.ShadowMaterial({ opacity: 0.10 });
     this.backWall = new THREE.Mesh(wallGeo, wallMat);
     this.backWall.position.set(0, 0, -2.75);
     this.backWall.receiveShadow = true;
@@ -186,6 +186,17 @@ export class SceneManager {
     this.heroLimeFloorSlice.position.set(0.65, -1.20, 1.35);
     this.heroLimeFloorSlice.rotation.set(Math.PI / 2, 0, 0.4);
     this.scene.add(this.heroLimeFloorSlice);
+
+    // 3b. Glistening Crystal Jelly / Ice Cubes (Placed safely in foreground with zero can clipping)
+    this.heroJelly1 = createIceCubeModel(0.36);
+    this.heroJelly1.position.set(-0.75, -1.16, 1.32);
+    this.heroJelly1.rotation.set(0.12, 0.55, 0.08);
+    this.scene.add(this.heroJelly1);
+
+    this.heroJelly2 = createIceCubeModel(0.26);
+    this.heroJelly2.position.set(1.38, -1.18, 1.08);
+    this.heroJelly2.rotation.set(-0.15, 0.82, 0.22);
+    this.scene.add(this.heroJelly2);
 
     // 4. Orbiting Watermelon Slices for Section 4
     this.orbitGroup = new THREE.Group();

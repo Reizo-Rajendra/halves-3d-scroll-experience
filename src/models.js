@@ -422,40 +422,89 @@ export function createLimeSliceModel() {
 }
 
 /**
- * 3D Crystal Ice Cube
+ * 3D Photorealistic Crystal Jelly / Ice Cube
+ * Glistening translucent facets with specular clearcoat reflections and suspended micro-bubbles
  */
-export function createIceCubeModel(size = 0.45) {
-  const geo = new THREE.BoxGeometry(size, size, size, 4, 4, 4);
+export function createIceCubeModel(size = 0.40) {
+  const group = new THREE.Group();
+
+  // Outer beveled, organic cube with slightly softened edges
+  const geo = new THREE.BoxGeometry(size, size, size, 5, 5, 5);
   const pos = geo.attributes.position;
+  const half = size / 2;
   for (let i = 0; i < pos.count; i++) {
     const vx = pos.getX(i);
     const vy = pos.getY(i);
     const vz = pos.getZ(i);
-    const jitter = 0.025;
+
+    // Soft bevel rounding on edges and corners
+    const dist = Math.sqrt(vx * vx + vy * vy + vz * vz);
+    const factor = 1 - Math.max(0, dist - half * 0.9) * 0.22;
+
+    const jitter = size * 0.035;
     pos.setXYZ(
       i,
-      vx + (Math.random() - 0.5) * jitter,
-      vy + (Math.random() - 0.5) * jitter,
-      vz + (Math.random() - 0.5) * jitter
+      vx * factor + (Math.random() - 0.5) * jitter,
+      vy * factor + (Math.random() - 0.5) * jitter,
+      vz * factor + (Math.random() - 0.5) * jitter
     );
   }
   geo.computeVertexNormals();
 
+  // Crystal clear physical jelly/ice material (luminous, translucent, never opaque gray)
   const iceMat = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
-    transmission: 0.95,
-    opacity: 1,
+    color: 0xf2fbf6,
     transparent: true,
+    opacity: 0.62,
     roughness: 0.04,
-    ior: 1.33,
-    thickness: 1.0,
-    specularIntensity: 1.0,
-    specularColor: 0xffffff
+    metalness: 0.02,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.03,
+    reflectivity: 0.98,
+    ior: 1.33
   });
 
   const mesh = new THREE.Mesh(geo, iceMat);
-  mesh.castShadow = true;
-  return mesh;
+  // Important: Disable castShadow on transparent crystal so it never casts a dark solid square shadow!
+  mesh.castShadow = false;
+  mesh.receiveShadow = true;
+  group.add(mesh);
+
+  // Inner sparkling core facet that catches bright specular points
+  const innerGeo = new THREE.OctahedronGeometry(size * 0.30, 0);
+  const innerMat = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.38,
+    roughness: 0.08,
+    clearcoat: 1.0
+  });
+  const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+  group.add(innerMesh);
+
+  // Suspended micro-bubbles inside the ice/jelly catching ambient reflections
+  const bubbleGeo = new THREE.SphereGeometry(size * 0.045, 8, 8);
+  const bubbleMat = new THREE.MeshBasicMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.7
+  });
+
+  const b1 = new THREE.Mesh(bubbleGeo, bubbleMat);
+  b1.position.set(size * 0.16, size * 0.12, -size * 0.1);
+  group.add(b1);
+
+  const b2 = new THREE.Mesh(bubbleGeo, bubbleMat);
+  b2.scale.set(0.7, 0.7, 0.7);
+  b2.position.set(-size * 0.18, -size * 0.08, size * 0.14);
+  group.add(b2);
+
+  const b3 = new THREE.Mesh(bubbleGeo, bubbleMat);
+  b3.scale.set(0.55, 0.55, 0.55);
+  b3.position.set(size * 0.06, -size * 0.18, -size * 0.06);
+  group.add(b3);
+
+  return group;
 }
 
 /**
